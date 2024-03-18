@@ -7,6 +7,7 @@ class mqConsumer(mqConsumerInterface):
         self.exchange_name = exchange_name
         self.queue_name = queue_name
         self.setupRMQConnection()
+        print("Consumer Created")
     
     def setupRMQConnection(self) -> None:
         con_params = pika.URLParameters(os.environ["AMQP_URL"])
@@ -24,19 +25,19 @@ class mqConsumer(mqConsumerInterface):
         )
         self.channel = channel
         self.connection = connection
+        # print("Connection Established")
 
-        def on_message_callback(self, channel, method_frame, header_frame, body):
-            channel.basic_ack(method_frame.delivery_tag, False)
-            print(body)
+    def on_message_callback(self, channel, method_frame, header_frame, body):
+        channel.basic_ack(method_frame.delivery_tag, False)
+        print(body)
 
-        def startConsuming(self):
-            print(" [*] Waiting for messages. To exit press CTRL+C")
-            self.channel.start_consuming()
+    def startConsuming(self):
+        print(" [*] Waiting for messages. To exit press CTRL+C")
+        self.channel.start_consuming()
 
-        def __del__(self):
-            print("Closing RMQ connection on destruction")
-            self.channel.close()
-            self.connection.close()
-        
-
+    def __del__(self):
+        # print("Closing RMQ connection on destruction")
+        self.channel.close()
+        self.connection.close()
     
+
