@@ -14,19 +14,40 @@
 
 import argparse
 import sys
+import pika
+import os
 
 from solution.producer_sol import mqProducer  # pylint: disable=import-error
 
 
 def main(ticker: str, price: float, sector: str) -> None:
     
+    
     # Implement Logic to Create Routing Key from the ticker and sector variable -  Step 2
     #
     #                       WRITE CODE HERE!!!
     #
+    #Build our connection to the RMQ Connection.
+    #The AMPQ_URL is a string which tells pika the package the URL of our AMPQ service in this scenario RabbitMQ.
+    
 
+    #We can then publish data to that exchange using the basic_publish method
+    # We'll first set up the connection and channel
+    conParams = pika.URLParameters(os.environ['AMQP_URL'])
+    connection = pika.BlockingConnection(parameters=conParams)
+    channel = connection.channel()
 
-    producer = mqProducer(routing_key=routingKey,exchange_name="Tech Lab Topic Exchange")
+    # Declare the topic exchange
+    channel.exchange_declare(exchange='topic_logs', exchange_type='topic')
+
+    # Set the routing key and publish a message with that topic exchange:
+    routing_key = sys.argv[1] if len(sys.argv) > 2 else 'anonymous.info'
+    message = ' '.join(sys.argv[2:]) or 'Hello World!'
+    channel.basic_publish(
+        exchange='topic_logs', routing_key=routing_key, body=message)
+    print(f" [x] Sent {routing_key}:{message}")
+
+    producer = mqProducer(routing_key=routing_key,exchange_name="Tech Lab Topic Exchange")
 
 
     # Implement Logic To Create a message variable from the variable EG. "TSLA price is now $500" - Step 3
@@ -43,5 +64,7 @@ if __name__ == "__main__":
     #
     #                       WRITE CODE HERE!!!
     #
-
+    ticker = sys.argv[1]
+    price = sys.argv[2]
+    sector = sys.argv[3]
     sys.exit(main(ticker,price,sector))
