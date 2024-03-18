@@ -68,6 +68,7 @@ There are two options to work on this project. Option [A] using an IDE, we recom
         ```sh
         docker-compose up
         ```
+        
     * In the output lines produced by the command, you will find three links providing access to the server hosting your Jupyter Notebook. Click on any one of these links to open and interact with the notebook. The links should resemble the following:
         ```
             rmq_lab-1   |     To access the server, open this file in a browser:
