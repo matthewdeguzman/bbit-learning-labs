@@ -42,12 +42,13 @@ def main(ticker: str, price: float, sector: str) -> None:
 
     # Set the routing key and publish a message with that topic exchange:
     routing_key = sys.argv[1] if len(sys.argv) > 2 else 'anonymous.info'
-    message = ' '.join(sys.argv[2:]) or 'Hello World!'
+    message = '.'.join(sys.argv[2:]) or 'Hello World!'
+    routing_key = f"{ticker}.{price}.{sector}"
     channel.basic_publish(
         exchange='topic_logs', routing_key=routing_key, body=message)
-    print(f" [x] Sent {routing_key}:{message}")
+    print(f" [x] Sent {routing_key}")
 
-    producer = mqProducer(routing_key=routing_key,exchange_name="Tech Lab Topic Exchange")
+    producer = mqProducer(routing_key=routing_key, exchange_name="Tech Lab Topic Exchange")
 
 
     # Implement Logic To Create a message variable from the variable EG. "TSLA price is now $500" - Step 3
